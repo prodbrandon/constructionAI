@@ -1,0 +1,39 @@
+@startuml
+
+!define RECTANGLE class
+
+RECTANGLE AABB {
+  - float x_min
+  - float y_min
+  - float x_max
+  - float y_max
+  __init__(float x_min, float y_min, float x_max, float y_max)
+}
+
+RECTANGLE Beam {
+  - AABB aabb
+  - dict material_properties
+  - dict loads
+  __init__(AABB aabb, dict material_properties, dict loads)
+  + calculate_dimensions() : tuple
+}
+
+class MaterialProperties {
+  + modulus_of_elasticity : float
+  + allowable_bending_stress : float
+}
+
+class Loads {
+  + uniform_distributed_load : float
+}
+
+class Visualization {
+  + get_user_inputs() : tuple
+}
+
+AABB -> Beam : used by
+MaterialProperties -- Beam : uses
+Loads -- Beam : uses
+Visualization -> Beam : gets inputs
+
+@enduml

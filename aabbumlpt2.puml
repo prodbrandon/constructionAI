@@ -1,0 +1,122 @@
+@startuml
+
+class Program {
+    - data: DataFrame
+    - obb_tree: OBBTree
+    - elasticsearch_client: ElasticsearchClient
+    - user_inputs: dict
+    + __init__()
+    + collect_user_inputs(): dict
+    + process_user_inputs()
+    + build_obb_tree(data: dict)
+    + query_elasticsearch(query: str): SearchResult
+    + perform_collision_detection(object: str): bool
+    + main_workflow()
+    + validate_user_inputs(inputs: dict): bool
+    + display_results(results: SearchResult)
+}
+
+class DataFrame {
+    - data: dict
+    + __init__()
+    + load_data(file_path: str)
+    + get_data(): dict
+    + process_data()
+    + save_data(file_path: str)
+    + filter_data(criteria: dict): dict
+}
+
+class OBBTree {
+    - root: Node
+    + __init__()
+    + build_tree(data: dict)
+    + query(point: Point): Node
+    + insert(node: Node)
+    + delete(node: Node)
+    + update(node: Node)
+}
+
+class Node {
+    - bounding_box: AABB
+    - children: list
+    + __init__(bounding_box: AABB)
+    + add_child(node: Node)
+    + remove_child(node: Node)
+    + get_children(): list
+}
+
+class AABB {
+    - min_point: Point
+    - max_point: Point
+    + __init__(min_point: Point, max_point: Point)
+    + intersects(other: AABB): bool
+    + contains(point: Point): bool
+}
+
+class Point {
+    - x: float
+    - y: float
+    + __init__(x: float, y: float)
+    + distance_to(other: Point): float
+    + to_tuple(): tuple
+}
+
+class ElasticsearchClient {
+    - connection: Connection
+    + __init__()
+    + connect()
+    + query(query_string: str): SearchResult
+    + index_data(index: str, data: dict)
+    + delete_data(index: str, query: str)
+    + update_data(index: str, query: str, data: dict)
+}
+
+class Connection {
+    - host: str
+    - port: int
+    + __init__(host: str, port: int)
+    + open()
+    + close()
+    + is_connected(): bool
+}
+
+class SearchResult {
+    - results: list
+    + __init__(results: list)
+    + get_results(): list
+    + count(): int
+    + filter_results(criteria: dict): list
+}
+
+Program --> DataFrame
+Program --> OBBTree
+Program --> ElasticsearchClient
+Program --> Point
+Program --> AABB
+Program --> SearchResult
+
+DataFrame --> Point
+OBBTree --> Node
+Node --> AABB
+ElasticsearchClient --> Connection
+ElasticsearchClient --> SearchResult
+
+note right of Program
+    Connected to RevitPythonShell
+    and RevitAPI
+    main_workflow() as entry point
+    The Program class orchestrates the flow, from collecting user inputs
+    to performing operations with DataFrame, OBBTree, and ElasticsearchClient.
+end note
+
+note left of Program
+    math
+    matplotlib
+    pandas
+    rtree
+    RevitPythonShell
+    RevitAPI
+    Additional libraries for data processing and visualization.
+end note
+
+@enduml
